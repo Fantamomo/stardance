@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   def show
     authorize @project
 
-    @body_class = "profile-layout-page"
+    @body_class = "app-layout-page"
 
     load_posts = -> {
       @project.posts

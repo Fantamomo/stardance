@@ -22,8 +22,8 @@
   latest_ship_post = @posts.find { |p| p.postable_type == "Post::ShipEvent" }
 %>
 
-<div class="profile-layout">
-  <div class="profile-layout__main">
+<div class="app-layout">
+  <div class="app-layout__main">
 
     <header class="profile__header project-show__header">
       <div class="profile__banner" style="--banner-image: url('<%= banner_url %>');">
@@ -226,7 +226,7 @@
 
   </div>
 
-  <%= render "shared/discover_rail" %>
+  <%= render DiscoverRailComponent.new %>
 </div>
 
 <% if @votes_for_payout.present? %>
