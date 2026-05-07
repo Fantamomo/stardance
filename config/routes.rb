@@ -42,7 +42,6 @@
 #                                        leaderboard GET    /leaderboard(.:format)                                                                            leaderboard#index
 #                                         my_balance GET    /my/balance(.:format)                                                                             my#balance
 #                                        my_settings PATCH  /my/settings(.:format)                                                                            my#update_settings
-#                                  my_stardust_click POST   /my/stardust_click(.:format)                                                                      my#stardust_click
 #                                      dismiss_thing POST   /my/dismiss_thing(.:format)                                                                       my#dismiss_thing
 #                                            my_club DELETE /my/club(.:format)                                                                                my#unlink_club
 #                                    my_achievements GET    /my/achievements(.:format)                                                                        achievements#index

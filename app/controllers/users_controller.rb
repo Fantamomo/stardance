@@ -38,7 +38,7 @@ class UsersController < ApplicationController
       devlogs_count: devlogs_count,
       ships_count: ships_count,
       votes_count: votes_count,
-      projects_count: @user.projects_count || @user.projects.size,
+      projects_count: @projects.size,
       hours_all_time: (@user.devlog_seconds_total / 3600.0).round
     }
 

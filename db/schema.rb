@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_07_112505) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_07_114038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -808,8 +808,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_112505) do
     t.string "email"
     t.string "enriched_ref"
     t.string "first_name"
-    t.integer "flavortown_message_count_14d"
-    t.integer "flavortown_support_message_count_14d"
     t.string "granted_roles", default: [], null: false, array: true
     t.boolean "has_gotten_free_stickers", default: false
     t.boolean "has_pending_achievements", default: false, null: false
@@ -817,22 +815,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_07_112505) do
     t.text "internal_notes"
     t.string "last_name"
     t.boolean "manual_ysws_override"
-    t.datetime "metrics_synced_at"
-    t.integer "projects_count"
-    t.integer "projects_shipped_count"
     t.string "ref"
     t.string "regions", default: [], array: true
     t.string "session_token"
     t.enum "shop_region", enum_type: "shop_region_type"
     t.string "slack_id"
-    t.datetime "slack_messages_updated_at"
-    t.integer "stardust_clicks", default: 0, null: false
     t.datetime "synced_at"
     t.string "things_dismissed", default: [], null: false, array: true
     t.string "tutorial_steps_completed", default: [], array: true
     t.datetime "updated_at", null: false
     t.string "verification_status", default: "needs_submission", null: false
-    t.boolean "vote_anonymously", default: false, null: false
     t.integer "vote_balance", default: 0, null: false
     t.integer "votes_count"
     t.boolean "voting_locked", default: false, null: false

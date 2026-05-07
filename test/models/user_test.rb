@@ -2,45 +2,37 @@
 #
 # Table name: users
 #
-#  id                                   :bigint           not null, primary key
-#  banned                               :boolean          default(FALSE), not null
-#  banned_at                            :datetime
-#  banned_reason                        :text
-#  bio                                  :text
-#  display_name                         :string
-#  email                                :string
-#  enriched_ref                         :string
-#  first_name                           :string
-#  flavortown_message_count_14d         :integer
-#  flavortown_support_message_count_14d :integer
-#  granted_roles                        :string           default([]), not null, is an Array
-#  has_gotten_free_stickers             :boolean          default(FALSE)
-#  has_pending_achievements             :boolean          default(FALSE), not null
-#  hcb_email                            :string
-#  internal_notes                       :text
-#  last_name                            :string
-#  manual_ysws_override                 :boolean
-#  metrics_synced_at                    :datetime
-#  projects_count                       :integer
-#  projects_shipped_count               :integer
-#  ref                                  :string
-#  regions                              :string           default([]), is an Array
-#  session_token                        :string
-#  shop_region                          :enum
-#  slack_messages_updated_at            :datetime
-#  stardust_clicks                      :integer          default(0), not null
-#  synced_at                            :datetime
-#  things_dismissed                     :string           default([]), not null, is an Array
-#  tutorial_steps_completed             :string           default([]), is an Array
-#  verification_status                  :string           default("needs_submission"), not null
-#  vote_anonymously                     :boolean          default(FALSE), not null
-#  vote_balance                         :integer          default(0), not null
-#  votes_count                          :integer
-#  voting_locked                        :boolean          default(FALSE), not null
-#  ysws_eligible                        :boolean          default(FALSE), not null
-#  created_at                           :datetime         not null
-#  updated_at                           :datetime         not null
-#  slack_id                             :string
+#  id                       :bigint           not null, primary key
+#  banned                   :boolean          default(FALSE), not null
+#  banned_at                :datetime
+#  banned_reason            :text
+#  bio                      :text
+#  display_name             :string
+#  email                    :string
+#  enriched_ref             :string
+#  first_name               :string
+#  granted_roles            :string           default([]), not null, is an Array
+#  has_gotten_free_stickers :boolean          default(FALSE)
+#  has_pending_achievements :boolean          default(FALSE), not null
+#  hcb_email                :string
+#  internal_notes           :text
+#  last_name                :string
+#  manual_ysws_override     :boolean
+#  ref                      :string
+#  regions                  :string           default([]), is an Array
+#  session_token            :string
+#  shop_region              :enum
+#  synced_at                :datetime
+#  things_dismissed         :string           default([]), not null, is an Array
+#  tutorial_steps_completed :string           default([]), is an Array
+#  verification_status      :string           default("needs_submission"), not null
+#  vote_balance             :integer          default(0), not null
+#  votes_count              :integer
+#  voting_locked            :boolean          default(FALSE), not null
+#  ysws_eligible            :boolean          default(FALSE), not null
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  slack_id                 :string
 #
 # Indexes
 #
