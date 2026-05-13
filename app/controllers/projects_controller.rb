@@ -503,10 +503,10 @@ class ProjectsController < ApplicationController
 
   def render_update_error
     if url_from(params[:return_to])&.include?("ships")
-      @last_ship = @project.last_ship_event
-      @devlogs_for_ship = @project.devlog_posts.includes(:user, postable: [ { attachments_attachments: :blob } ])
-      @devlogs_for_ship = @devlogs_for_ship.where("posts.created_at > ?", @last_ship.created_at) if @last_ship
-      @step = 2
+      @hide_sidebar = true
+      @body_class = "ship-page"
+      @project_times = current_user.try_sync_hackatime_data!&.dig(:projects) || {}
+      @step = 1
       render "projects/ships/new", status: :unprocessable_entity
     elsif params[:inline_project_show].present?
       @body_class = "app-layout-page"
