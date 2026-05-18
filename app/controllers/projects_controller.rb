@@ -65,9 +65,7 @@ class ProjectsController < ApplicationController
       @posts = @posts.reject { |post| post.postable_type == "Post::GitCommit" }
     end
 
-    unless current_user&.admin?
-      @posts = @posts.reject { |post| post.postable_type == "Post::ShipEvent" && post.postable.certification_status != "approved" }
-    end
+    @posts = @posts.reject { |post| post.postable_type == "Post::ShipEvent" && post.postable.certification_status != "approved" }
 
     @show_project_onboarding = @is_member && @posts.empty?
     @show_hackatime_onboarding = @show_project_onboarding && current_user && current_user.hackatime_identity.blank?
