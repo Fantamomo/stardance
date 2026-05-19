@@ -19,20 +19,6 @@ class Projects::DevlogsController < ApplicationController
         Post.create!(project: @project, user: current_user, postable: @devlog)
         flash[:notice] = "Devlog created successfully"
 
-        unless @devlog.tutorial?
-          existing_non_tutorial_devlogs = Post::Devlog.joins(:post)
-                                                      .where(posts: { user_id: current_user.id })
-                                                      .where(tutorial: false)
-                                                      .where.not(id: @devlog.id)
-          if existing_non_tutorial_devlogs.empty?
-            FunnelTrackerService.track(
-              event_name: "devlog_created",
-              user: current_user,
-              properties: { devlog_id: @devlog.id, project_id: @project.id }
-            )
-          end
-        end
-
         return redirect_to project_path(@project)
       else
         redirect_back fallback_location: home_path(project_id: @project.id),

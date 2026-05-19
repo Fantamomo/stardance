@@ -16,7 +16,7 @@ class Onboarding::WizardController < ApplicationController
       redirect_to root_path, alert: "Please enter a valid email address." and return
     end
 
-    normalized = FunnelTrackerService.normalize_email(email)
+    normalized = normalize_email(email)
     existing = User.find_by(email: normalized)
 
     if existing&.hca_linked?
@@ -30,7 +30,6 @@ class Onboarding::WizardController < ApplicationController
 
     signup_session.start!
     signup_session.email = normalized
-    track(:welcome, :started)
     redirect_to onboarding_welcome_path
   end
 
@@ -42,11 +41,8 @@ class Onboarding::WizardController < ApplicationController
     case params[:attestation]
     when "teen_13_18"
       signup_session.age_attestation = "teen_13_18"
-      track(:birthday, :submitted, attestation: "teen_13_18")
       redirect_to onboarding_experience_path
     when "ineligible"
-      track(:birthday, :submitted, attestation: "ineligible")
-      track(:age_gate, :terminal_reached)
       signup_session.clear!
       redirect_to onboarding_age_gate_path
     else
@@ -65,7 +61,6 @@ class Onboarding::WizardController < ApplicationController
     end
 
     signup_session.experience_level = level
-    track(:experience, :submitted, level: level)
     redirect_to onboarding_experience_result_path
   end
 
@@ -84,7 +79,6 @@ class Onboarding::WizardController < ApplicationController
     end
 
     signup_session.interests = selected
-    track(:interests, :submitted, interests: selected)
     redirect_to onboarding_interests_result_path
   end
 
@@ -108,7 +102,6 @@ class Onboarding::WizardController < ApplicationController
     end
 
     signup_session.display_name = display_name
-    track(:name, :submitted)
     finalize_signup
   end
 
@@ -138,12 +131,10 @@ class Onboarding::WizardController < ApplicationController
         experience_level: signup_session.experience_level,
         interests:        signup_session.interests || []
       ).call!
-      FunnelTrackerService.link_events_to_user(created, created.email)
       created
     end
 
     session[:user_id] = user.id
-    track(:done, :guest_created, guest_user_id: user.id)
     signup_session.clear!
 
     redirect_to onboarding_complete_path
@@ -165,11 +156,7 @@ class Onboarding::WizardController < ApplicationController
     normalized.split.map(&:capitalize).join(" ").presence
   end
 
-  def track(step, action, props = {})
-    FunnelTrackerService.track(
-      event_name: "onboarding_#{step}_#{action}",
-      email: signup_session.email,
-      properties: props
-    )
+  def normalize_email(email)
+    email.to_s.strip.downcase
   end
 end

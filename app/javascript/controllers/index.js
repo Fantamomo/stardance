@@ -130,9 +130,6 @@ application.register("shop-wishlist", ShopWishlistController);
 import SidebarActiveController from "./sidebar_active_controller";
 application.register("sidebar-active", SidebarActiveController);
 
-import SuperMegaFunnelController from "./super_mega_funnel_controller";
-application.register("super-mega-funnel", SuperMegaFunnelController);
-
 import CountUpController from "./count_up_controller";
 application.register("count-up", CountUpController);
 

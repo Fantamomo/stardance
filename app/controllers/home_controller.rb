@@ -5,13 +5,7 @@ class HomeController < ApplicationController
     @welcoming = params[:welcome] == "1" && current_user.present? && !session[:welcomed]
     @body_class += " home-welcoming" if @welcoming
 
-    if @welcoming
-      session[:welcomed] = true
-      FunnelTrackerService.track(
-        event_name: "onboarding_welcome_overlay_continued",
-        user: current_user
-      )
-    end
+    session[:welcomed] = true if @welcoming
 
     load_feed
     load_composer

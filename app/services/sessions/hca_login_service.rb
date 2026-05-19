@@ -77,15 +77,6 @@ module Sessions
         )
       end
 
-      if is_new_user
-        FunnelTrackerService.track(
-          event_name: "first_login",
-          user: user,
-          properties: { referral_code: user.ref }
-        )
-        FunnelTrackerService.link_events_to_user(user, user.email) if user.email.present?
-      end
-
       SyncSlackDisplayNameJob.perform_later(user)
       CheckSlackMembershipJob.perform_later(user)
 

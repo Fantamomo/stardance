@@ -7,7 +7,7 @@ module Onboarding
     attr_reader :email, :display_name, :age_attestation, :experience_level, :interests
 
     def initialize(email:, display_name:, age_attestation:, experience_level:, interests:)
-      @email            = FunnelTrackerService.normalize_email(email)
+      @email            = email.to_s.strip.downcase
       @display_name     = display_name.to_s.strip.presence
       @age_attestation  = age_attestation
       @experience_level = experience_level

@@ -34,7 +34,6 @@ class MissionSubmissionsController < ApplicationController
       grant_mission_achievement_if_configured
     end
     notify_builder("submission_approved")
-    track_funnel("mission_submission_approved")
     redirect_to @submission, notice: "Submission approved."
   end
 
@@ -46,7 +45,6 @@ class MissionSubmissionsController < ApplicationController
     @submission.update!(reviewed_by: current_user, reviewed_at: Time.current, rejection_message: message)
     @submission.reject!
     notify_builder("submission_rejected")
-    track_funnel("mission_submission_rejected")
     redirect_to @submission, notice: "Submission rejected."
   end
 
@@ -54,7 +52,6 @@ class MissionSubmissionsController < ApplicationController
     authorize @submission
     @submission.update!(reviewed_by: nil, reviewed_at: nil, rejection_message: nil)
     @submission.undo!
-    track_funnel("mission_submission_undone")
     redirect_to @submission, notice: "Submission moved back to pending."
   end
 
@@ -103,14 +100,5 @@ class MissionSubmissionsController < ApplicationController
     )
   rescue StandardError => e
     Rails.logger.warn("MissionSubmissions notify_builder: #{e.message}")
-  end
-
-  def track_funnel(event)
-    return unless defined?(FunnelTrackerService)
-    FunnelTrackerService.track(
-      event_name: event,
-      user: current_user,
-      properties: { submission_id: @submission.id, mission_id: @submission.mission_id }
-    )
   end
 end

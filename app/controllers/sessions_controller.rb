@@ -18,7 +18,6 @@ class SessionsController < ApplicationController
     session[:user_id] = result.user.id
 
     if session.delete(:start_flow)
-      FunnelTrackerService.track(event_name: "start_flow_signin", user: result.user)
       apply_start_flow_data!(result.user)
       result.user.complete_tutorial_step!(:first_login)
       session[:show_welcome_overlay] = true
