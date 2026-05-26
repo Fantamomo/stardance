@@ -1,4 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
+import confetti from "canvas-confetti";
+
+const CONFETTI_COLORS = [
+  "#81ffff", // mint
+  "#ebb7ff", // lilac
+  "#ff8d9d", // salmon
+  "#ffe564", // yellow
+  "#ffd598", // peach
+];
 
 export default class extends Controller {
   static targets = [
@@ -89,6 +98,10 @@ export default class extends Controller {
       clearTimeout(this._autoAdvanceTimer);
       this._autoAdvanceTimer = null;
     }
+    if (this._confettiTimer) {
+      clearTimeout(this._confettiTimer);
+      this._confettiTimer = null;
+    }
   }
 
   _onReflow() {
@@ -148,6 +161,7 @@ export default class extends Controller {
       "welcome-tour--ceremonial",
       !!step.ceremonial,
     );
+    this.element.classList.remove("welcome-tour--ceremonial-leaving");
     this.element.classList.toggle(
       "welcome-tour--click-to-advance",
       !!step.clickToAdvance,
@@ -215,12 +229,20 @@ export default class extends Controller {
     });
 
     this.textTarget.textContent = step.text;
-    this.counterTarget.textContent = `${this.stepValue + 1}/${this.stepsValue.length}`;
 
-    const isLast = this.stepValue === this.stepsValue.length - 1;
+    // Counter shows position among user-clickable steps only — auto-advance
+    // (ceremonial intro) doesn't count as a step the user can navigate.
+    const autoBeforeMe = this.stepsValue
+      .slice(0, this.stepValue)
+      .filter((s) => s.autoAdvance).length;
+    const visibleIndex = this.stepValue - autoBeforeMe;
+    const visibleTotal = this.stepsValue.filter((s) => !s.autoAdvance).length;
+    this.counterTarget.textContent = `${visibleIndex + 1}/${visibleTotal}`;
+
+    const isLast = visibleIndex === visibleTotal - 1;
     this.nextTarget.textContent = isLast
       ? "Finish! →"
-      : `Next (${this.stepValue + 1}/${this.stepsValue.length}) →`;
+      : `Next (${visibleIndex + 1}/${visibleTotal}) →`;
     this.nextTarget.hidden = !!step.clickToAdvance;
     this.backTarget.hidden = this.stepValue === 0 || !!step.clickToAdvance;
 
@@ -283,11 +305,73 @@ export default class extends Controller {
     });
 
     if (auto) {
-      this._autoAdvanceTimer = setTimeout(
-        () => this.next(),
-        step.autoAdvance,
-      );
+      const FADE_OUT_MS = 500;
+
+      // Fire confetti immediately as the welcome ceremony starts — bursts
+      // appear against the black veil while the welcome text fades in.
+      if (step.ceremonial) {
+        this._fireConfetti();
+      }
+
+      // Trigger a fade-out class first, then advance once the animation has
+      // had time to play. Both timers are tracked via _autoAdvanceTimer so
+      // _clearAutoAdvance/next/back can cancel them at any point.
+      this._autoAdvanceTimer = setTimeout(() => {
+        this.element.classList.add("welcome-tour--ceremonial-leaving");
+        this._autoAdvanceTimer = setTimeout(() => this.next(), FADE_OUT_MS);
+      }, step.autoAdvance);
     }
+  }
+
+  _fireConfetti() {
+    if (typeof confetti !== "function") return;
+
+    const base = {
+      colors: CONFETTI_COLORS,
+      zIndex: 10000,
+      shapes: ["star", "square"],
+      ticks: 220,
+    };
+
+    // Two cannons from the lower corners arcing toward the middle.
+    confetti({
+      ...base,
+      particleCount: 70,
+      angle: 60,
+      spread: 58,
+      startVelocity: 55,
+      origin: { x: 0, y: 0.85 },
+      scalar: 1.05,
+    });
+    confetti({
+      ...base,
+      particleCount: 70,
+      angle: 120,
+      spread: 58,
+      startVelocity: 55,
+      origin: { x: 1, y: 0.85 },
+      scalar: 1.05,
+    });
+
+    // A slow drift of stars falling from above, sustained for ~1.4s so the
+    // burst tapers into something gentler instead of cutting off hard.
+    const driftEnd = performance.now() + 1400;
+    const drift = () => {
+      confetti({
+        ...base,
+        particleCount: 3,
+        startVelocity: 0,
+        gravity: 0.5,
+        ticks: 320,
+        shapes: ["star"],
+        scalar: 0.85,
+        origin: { x: Math.random(), y: -0.05 },
+      });
+      if (performance.now() < driftEnd) {
+        this._confettiTimer = setTimeout(drift, 110);
+      }
+    };
+    drift();
   }
 
   _findTarget(selector) {

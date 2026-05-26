@@ -6,26 +6,53 @@
     <h1 class="onboarding-screen__title">How much have you made on your own before?</h1>
     <p class="onboarding-screen__subhead">Coding experience, hardware projects, anything technical. There's no wrong answer, and we'll use this to tailor your experience to your better!</p>
 
-    <%= form_with url: onboarding_experience_path, method: :post, local: true,
+    <%= form_with url: onboarding_experience_path, method: :post,
+                   data: { controller: "onboarding-experience-slider" },
                    class: "onboarding-experience__form" do %>
-      <div class="onboarding-experience__cards">
-        <% [
-          [ "none",        "Total beginner, never really coded or built anything" ],
-          [ "little",      "I've done some school stuff, but never on my own" ],
-          [ "some",        "I've made a project or two on my own :)" ],
-          [ "experienced", "I'm always building something!" ]
-        ].each do |value, label| %>
-          <%= render ActionButtonComponent.new(
-                text: label,
-                variant: :secondary,
-                size: :large,
-                surface: :dark,
-                type: :submit,
-                name: "level",
-                value: value,
-                data: { action: "click->onboarding-transition#press" }
-              ) %>
-        <% end %>
+      <div class="onboarding-experience__slider-wrap">
+        <div class="onboarding-experience__slider-readout" aria-live="polite">
+          <h2 class="onboarding-experience__slider-title"
+              data-onboarding-experience-slider-target="title"></h2>
+          <p class="onboarding-experience__slider-description"
+             data-onboarding-experience-slider-target="description"></p>
+        </div>
+
+        <div class="onboarding-experience__slider-track">
+          <div class="onboarding-experience__slider-rail" aria-hidden="true">
+            <div class="onboarding-experience__slider-fill"></div>
+          </div>
+          <input type="range" min="0" max="3" step="1" value="1"
+                 class="onboarding-experience__slider"
+                 data-onboarding-experience-slider-target="slider"
+                 data-action="input->onboarding-experience-slider#touch">
+        </div>
+
+        <div class="onboarding-experience__slider-ticks" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="onboarding-experience__slider-endpoints" aria-hidden="true">
+          <span>Beginner</span>
+          <span>Expert</span>
+        </div>
+
+        <%= hidden_field_tag :level, "little",
+                             data: { onboarding_experience_slider_target: "hidden" } %>
+      </div>
+
+      <div class="onboarding-experience__submit-row">
+        <%= render ActionButtonComponent.new(
+              text: "Next",
+              variant: :primary,
+              size: :large,
+              type: :submit,
+              icon: "icons/right-arrow.svg",
+              disabled: true,
+              data: {
+                onboarding_experience_slider_target: "submit",
+                action: "click->onboarding-transition#press"
+              }
+            ) %>
       </div>
     <% end %>
   </div>
