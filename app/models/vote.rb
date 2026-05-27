@@ -55,21 +55,8 @@ class Vote < ApplicationRecord
     storytelling: :storytelling_score
   }.freeze
 
-  def self.enabled_categories = CATEGORIES.keys
-  def self.score_columns = SCORE_COLUMNS_BY_CATEGORY.values
-  def self.score_column_for!(category) = SCORE_COLUMNS_BY_CATEGORY.fetch(category.to_sym)
-
-  scope :legitimate, -> { where(suspicious: false) }
   scope :suspicious, -> { where(suspicious: true) }
-  scope :payout_countable, -> {
-    legitimate
-      .where(verdict: [ nil, "neutral", "blessed" ])
-      .where.not(reason_quality_label: nil)
-      .where.not(reason_quality_label: "poor")
-  }
-  scope :current_voting_scale, -> {
-    joins(:ship_event).where(post_ship_events: { voting_scale_version: Post::ShipEvent::CURRENT_VOTING_SCALE_VERSION })
-  }
+  scope :payout_countable, -> {}
 
   before_save :mark_suspicious
   before_create :stamp_verdict
@@ -80,12 +67,7 @@ class Vote < ApplicationRecord
 
   has_paper_trail on: [ :create, :update, :destroy ]
 
-  after_commit :refresh_majority_judgment_scores, on: [ :create, :destroy ]
-  after_commit :trigger_payout_calculation, on: [ :create, :destroy ]
   after_commit :increment_user_vote_balance, on: :create
-  after_commit :detect_vote_spam, on: :create
-  after_commit :enqueue_reason_quality_scoring, on: :create
-  after_commit :broadcast_vote_to_channel, on: :create
 
   validates :reason, presence: { message: "can't be blank" }
   validate :reason_minimum_words
@@ -114,14 +96,6 @@ class Vote < ApplicationRecord
     errors.add(:user, "cannot vote on own projects") if project&.users&.exists?(user_id)
   end
 
-  def refresh_majority_judgment_scores
-    ShipEventMajorityJudgmentRefreshJob.perform_later
-  end
-
-  def trigger_payout_calculation
-    ShipEventPayoutCalculatorJob.perform_later
-  end
-
   def increment_user_vote_balance
     # Only increment vote balance for legitimate (non-suspicious) votes
     return if suspicious?
@@ -136,25 +110,5 @@ class Vote < ApplicationRecord
     return if expected_project_id.blank?
 
     errors.add(:project, "does not match ship event") if project_id != expected_project_id
-  end
-
-  def mark_suspicious
-    self.suspicious = Secrets::VoteSuspicion.suspicious_vote?(vote: self)
-  end
-
-  def stamp_verdict
-    self.verdict = user&.vote_verdict&.verdict || "neutral"
-  end
-
-  def detect_vote_spam
-    Secrets::VoteSpamDetector.new(user).call
-  end
-
-  def enqueue_reason_quality_scoring
-    Vote::ScoreReasonQualityJob.perform_later(id)
-  end
-
-  def broadcast_vote_to_channel
-    BroadcastVoteToChannelJob.perform_later(self)
   end
 end
