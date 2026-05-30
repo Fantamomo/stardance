@@ -37,10 +37,18 @@
       <% end %>
 
       <p class="onboarding-interests-result__prize-label">and they're getting prizes like</p>
-      <div class="onboarding-interests-result__prizes" aria-hidden="true">
-        <%# v1 ships with placeholder boxes; curated photos go in app/assets/images/onboarding/prizes/ once extracted from Figma %>
-        <% 5.times do |i| %>
-          <div class="onboarding-interests-result__prize onboarding-interests-result__prize--<%= i %>"></div>
+      <div class="onboarding-interests-result__prizes">
+        <% [
+          ["onboarding/prizes/bambu-a1-mini.png", "Bambu A1 Mini"],
+          ["onboarding/prizes/framework-laptop.png", "Framework Laptop"],
+          ["onboarding/prizes/ipad.png", "Apple iPad"],
+          ["onboarding/prizes/raspberry-pi-5.png", "Raspberry Pi 5"],
+          ["onboarding/prizes/meta-quest-3.png", "Meta Quest 3"],
+        ].each_with_index do |(src, label), i| %>
+          <div class="onboarding-interests-result__prize-item onboarding-interests-result__prize--<%= i %>">
+            <%= image_tag src, alt: label, class: "onboarding-interests-result__prize-img", loading: "lazy" %>
+            <span class="onboarding-interests-result__prize-name"><%= label %></span>
+          </div>
         <% end %>
       </div>
     <% end %>

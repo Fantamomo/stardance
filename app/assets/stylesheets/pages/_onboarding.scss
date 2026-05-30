@@ -912,42 +912,57 @@ $slider-star: url("onboarding/star-radio-active.svg");
   }
 
   &__prize-label {
-    font-weight: 700;
-    margin: 1.5rem 0 0.5rem;
-    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+    opacity: 0.7;
   }
 
   &__prizes {
+    align-items: flex-end;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    margin-left: -0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  &__prize-item {
     align-items: center;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
-    margin-bottom: 2rem;
-    min-height: 200px;
+    flex-direction: column;
+    margin-left: -2rem;
+
+    &:first-child { margin-left: 0; }
+
+    @media (max-width: 768px) {
+      margin-left: -1.25rem;
+    }
+  }
+
+  &__prize-img {
+    height: 180px;
+    object-fit: contain;
+    width: auto;
+
+    @media (max-width: 768px) {
+      height: 110px;
+    }
+  }
+
+  &__prize-name {
+    font-size: 0.6rem;
+    font-weight: 600;
+    margin-top: 0.3rem;
+    opacity: 0.5;
   }
 
   &__prize {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem;
-    height: 150px;
-    width: 150px;
-
-    &--0 {
-      transform: rotate(-3deg);
-    }
-    &--1 {
-      transform: rotate(19deg);
-    }
-    &--2 {
-      transform: rotate(11deg);
-    }
-    &--3 {
-      transform: rotate(-10deg);
-    }
-    &--4 {
-      transform: rotate(4deg);
-    }
+    &--0 { transform: rotate(-3deg); z-index: 1; .onboarding-interests-result__prize-img { height: 230px; @media (max-width: 768px) { height: 140px; } } }
+    &--1 { transform: rotate(2deg); z-index: 2; }
+    &--2 { transform: rotate(-1deg); z-index: 3; }
+    &--3 { transform: rotate(3deg); z-index: 2; }
+    &--4 { transform: rotate(-2deg); z-index: 1; }
   }
 
   &__next {
