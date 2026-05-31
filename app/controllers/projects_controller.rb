@@ -150,6 +150,11 @@ class ProjectsController < ApplicationController
   def add_test_time
     authorize @project
 
+    unless Flipper.enabled?(:test_time, current_user)
+      redirect_back fallback_location: project_path(@project), alert: "Test time is not available"
+      return
+    end
+
     # NB: query the table directly rather than current_user.hackatime_projects —
     # that reader is overridden (User::HackatimeSync) to only surface real synced
     # projects, so it would never find the test-time row and a second click would

@@ -104,6 +104,11 @@ class Projects::DevlogsController < ApplicationController
       redirect_to project_path(@project) and return
     end
 
+    if @devlog.hackatime_projects_key_snapshot == "test" && !Flipper.enabled?(:delete_test_devlog, current_user)
+      flash[:alert] = "Test-time devlogs cannot be deleted"
+      redirect_to project_path(@project) and return
+    end
+
     if force && project_shipped
       PaperTrail::Version.create!(
         item_type: "Post::Devlog",
