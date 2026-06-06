@@ -12,6 +12,20 @@
         </div>
       <% end %>
 
+      <% if !@prerequisites_met && @unmet_prerequisites.any? %>
+        <div class="mission-home__locked">
+          <p class="mission-home__locked-message">
+            This mission is locked. Complete
+            <% @unmet_prerequisites.each_with_index do |prereq, i| %>
+              <%= ", " if i > 0 && i < @unmet_prerequisites.length - 1 %>
+              <%= " and " if i > 0 && i == @unmet_prerequisites.length - 1 %>
+              <%= link_to prereq.name, mission_path(prereq.slug), class: "mission-home__locked-link" %>
+            <% end %>
+            first to unlock it!
+          </p>
+        </div>
+      <% end %>
+
       <p class="mission-home__crumb">
         <span class="mission-home__crumb-links">
           <%= link_to "Missions", missions_path, class: "mission-home__crumb-link" %>
@@ -82,7 +96,7 @@
                         project_path(@active_project),
                         data: { turbo: false },
                         class: "action-btn action-btn--large action-btn--primary" %>
-          <% else %>
+          <% elsif @prerequisites_met %>
             <%= button_to "Create a project",
                           projects_setup_submit_mission_path,
                           method: :post,
@@ -123,7 +137,7 @@
 
         <%# Prizes card %>
         <% has_stardust = @mission.fixed_stardust_payout&.positive? %>
-        <% if @ordered_prizes.any? || has_stardust %>
+        <% if @ordered_prizes.any? || has_stardust || @unlocked_missions.any? %>
           <section class="mission-home__card mission-home__rewards"
                    aria-labelledby="mission-home-rewards">
             <h2 id="mission-home-rewards" class="mission-home__card-title">
@@ -161,6 +175,24 @@
                     <% if prize.shop_item.description.present? %>
                       <p class="mission-home__prize-blurb"><%= prize.shop_item.description %></p>
                     <% end %>
+                  </div>
+                </li>
+              <% end %>
+              <% @unlocked_missions.each_with_index do |unlocked, idx| %>
+                <% tone = tones[(tone_idx + @ordered_prizes.size + idx) % tones.length] %>
+                <li class="mission-home__prize mission-home__prize--<%= tone %>">
+                  <div class="mission-home__prize-tile">
+                    <% if unlocked.icon.attached? %>
+                      <%= image_tag unlocked.icon, alt: "", class: "mission-home__prize-img mission-home__prize-img--contain" %>
+                    <% else %>
+                      <svg viewBox="0 0 24 24" width="28" height="28" class="mission-home__prize-glyph" aria-hidden="true">
+                        <path d="M12 1.5 13.6 10.4 22.5 12 13.6 13.6 12 22.5 10.4 13.6 1.5 12 10.4 10.4Z" />
+                      </svg>
+                    <% end %>
+                  </div>
+                  <div class="mission-home__prize-body">
+                    <p class="mission-home__prize-title">Unlocks <%= link_to unlocked.name, mission_path(unlocked.slug) %></p>
+                    <p class="mission-home__prize-blurb">Completing this mission will unlock the <%= unlocked.name %> mission</p>
                   </div>
                 </li>
               <% end %>

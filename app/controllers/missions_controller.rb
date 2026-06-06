@@ -26,6 +26,9 @@ class MissionsController < ApplicationController
     @estimated_label      = @mission.estimated_completion_label
     @active_project       = current_user&.active_project_for_mission(@mission)
     @progress_state       = compute_progress_state(@mission, @active_project, @guide_outline)
+    @unlocked_missions     = @mission.unlocks.enabled.to_a
+    @prerequisites_met     = @mission.prerequisites_met_by?(current_user)
+    @unmet_prerequisites   = @mission.unmet_prerequisites_for(current_user)
 
     if current_user && @active_project.nil?
       @attachable_projects = current_user.projects
