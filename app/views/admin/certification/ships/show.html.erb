@@ -77,6 +77,12 @@
               <dt>Reviewer</dt>
               <dd><%= @ship.reviewer.display_name %></dd>
             <% end %>
+            <% if @ship.returned_by %>
+              <dt>Returned by</dt>
+              <dd><%= @ship.returned_by.display_name %></dd>
+              <dt>Return reason</dt>
+              <dd><%= @ship.recert_reason %></dd>
+            <% end %>
             <dt>Updated project</dt>
             <dd>
               <% if @ship.project.update_description.present? %>
