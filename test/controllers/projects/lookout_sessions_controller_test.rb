@@ -2,6 +2,7 @@ require "test_helper"
 
 class Projects::LookoutSessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    Flipper.enable(:hardware_flow)
     @owner = create_user(slack_id: "U_LS_OWNER", display_name: "ls_owner")
     # A linked Hackatime account is required to start a session. insert_all skips
     # the after_commit sync (no network) and the access_token presence validation.
