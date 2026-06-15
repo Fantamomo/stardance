@@ -1,12 +1,15 @@
 <% content_for :title, "Rate this project" %>
 
 <% if @vote_policy.open? && @assignment.present? %>
-  <main class="vote-page" aria-labelledby="vote-page-title">
+  <main class="vote-page" aria-labelledby="vote-page-title"
+        data-controller="vote-telemetry"
+        data-vote-telemetry-assignment-id-value="<%= @assignment.id %>"
+        data-vote-telemetry-endpoint-value="<%= votes_events_path %>">
     <div class="vote-page__layout">
       <section class="vote-page__main" aria-label="Project context">
         <%= render "votes/toolbar", assignment: @assignment %>
         <%= render "votes/project_card", project: @project %>
-        <%= render "votes/timeline", posts: @timeline_posts, project: @project %>
+        <%= render "votes/timeline", posts: @timeline_posts, project: @project, assignment: @assignment %>
       </section>
 
       <aside class="vote-page__aside" aria-labelledby="vote-scorecard-title">

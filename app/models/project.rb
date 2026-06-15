@@ -94,6 +94,7 @@ class Project < ApplicationRecord
   has_many :ship_events, through: :ship_event_posts, source: :postable, source_type: "Post::ShipEvent"
   has_many :git_commit_posts, -> { where(postable_type: "Post::GitCommit").order(created_at: :desc) }, class_name: "Post"
   has_many :votes, dependent: :destroy
+  has_many :vote_events, class_name: "Vote::Event", dependent: :nullify
   has_many :reports, class_name: "Project::Report", dependent: :destroy
   has_many :ship_reviews, class_name: "Certification::Ship", dependent: :restrict_with_exception
   has_many :skips, class_name: "Project::Skip", dependent: :destroy
