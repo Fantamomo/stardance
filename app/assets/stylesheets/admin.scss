@@ -159,7 +159,6 @@ body.admin-page {
       &:hover {
         background: var(--color-overlay-light-soft);
       }
-
       &:last-child td {
         border-bottom: 0;
       }
@@ -280,7 +279,6 @@ body.admin-page {
     &:hover {
       box-shadow: var(--shadow);
     }
-
     &::after {
       content: unset;
     }
@@ -513,15 +511,12 @@ body.admin-page {
   &:hover {
     background: var(--color-overlay-light);
   }
-
   &:first-child {
     border-radius: 0.35rem 0.35rem 0 0;
   }
-
   &:last-child {
     border-radius: 0 0 0.35rem 0.35rem;
   }
-
   &.is-hidden {
     display: none;
   }
@@ -806,7 +801,6 @@ dialog {
 .audit-log__username {
   font-weight: 500;
 }
-
 .audit-log__system {
   color: var(--color-space-text-muted);
   font-style: italic;
@@ -866,17 +860,14 @@ dialog {
 .audit-log__val {
   font-size: var(--font-size-xs);
 }
-
 .audit-log__redacted {
   font-size: var(--font-size-xs);
   color: var(--color-space-text-muted);
 }
-
 .audit-log__more {
   font-size: var(--font-size-xs);
   color: var(--color-space-text-muted);
 }
-
 .audit-log__empty {
   color: var(--color-space-text-muted);
 }
