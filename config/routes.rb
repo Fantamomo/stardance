@@ -761,6 +761,7 @@ Rails.application.routes.draw do
           get :logs
           get :monitor, to: "ships/monitor#show"
         end
+        patch :set_project_type, on: :member
         scope module: :ships do
           resource :claim, only: [ :create, :destroy ]
         end
