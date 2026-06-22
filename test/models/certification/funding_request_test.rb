@@ -102,7 +102,7 @@ class Certification::FundingRequestTest < ActiveSupport::TestCase
     HCBService.stub(:create_card_grant, HCB_GRANT_RESPONSE) do
       fr.update!(reviewer: @reviewer, status: :approved)
     end
-    assert_equal 240, @owner.reload.outpost_discount_stardust
+    assert_equal 300, @owner.reload.outpost_discount_stardust
 
     fr.update!(feedback: "nice work")
     assert_equal 300, @owner.reload.outpost_discount_stardust
